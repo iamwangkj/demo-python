@@ -1,17 +1,31 @@
-from app import app
-from flask import render_template
+from app import app, mongo
+from flask import render_template, jsonify, make_response
+import json
+
 
 @app.route('/')
 @app.route('/index')
 def index():
-    user = { 'nickname': 'Wangkj' } # fake user
-    return render_template(
-        "index.html",
-        title = 'Home',
-        user = user
-    )
+    users_online = mongo.db.users.find({'online': True})
+    print(type(users_online))
+    res = []
+    for item in users_online:
+        res.append(item)
+    print(res)
+
+    print(type(res))
+    return jsonify({'data': res})
 
 
 @app.route('/users')
-def users():
+def getUsers():
+    res = mongo.db.users.insert({
+        'name': 'wangkj',
+        'online': True
+    })
+    return res
+
+
+@app.route('/users', methods=['POST'])
+def addUsers():
     return "users1"
