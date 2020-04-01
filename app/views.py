@@ -1,19 +1,16 @@
 from app import app, mongo
 from flask import render_template, jsonify, make_response
-import json
 
 
 @app.route('/')
 @app.route('/index')
 def index():
-    users_online = mongo.db.users.find({'online': True})
-    print(type(users_online))
+    arr = mongo.db.users.find({'online': True})
     res = []
-    for item in users_online:
+    for item in arr:
+        _id = item.pop("_id")
+        item["id"] = str(_id)
         res.append(item)
-    print(res)
-
-    print(type(res))
     return jsonify({'data': res})
 
 
